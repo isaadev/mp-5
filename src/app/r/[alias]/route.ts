@@ -3,26 +3,20 @@ import getCollection from "../../lib/db";
 
 export async function GET(
     request: Request,
-    { params }: { params: Promise<{ alias: string }> }
+    { params }: { params: { alias: string } } 
 ) {
     try {
-        const { alias } = await params;
+        const { alias } = params; 
         const links = await getCollection("links");
         const foundLink = await links.findOne({ alias });
 
         if (!foundLink) {
-            return NextResponse.json(
-                { error: 'Link not found' },
-                { status: 404 }
-            );
+            return new Response('Link not found', { status: 404 });
         }
 
-        return NextResponse.redirect(foundLink.url, 307);
+        return NextResponse.redirect(foundLink.url);
     } catch (error) {
         console.error('Error:', error);
-        return NextResponse.json(
-            { error: 'server error' },
-            { status: 500, headers: { 'Content-Type': 'application/json' } }
-        );
+        return new Response('Server error', { status: 500 });
     }
 }
