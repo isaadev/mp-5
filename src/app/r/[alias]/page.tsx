@@ -1,7 +1,13 @@
 import { redirect } from 'next/navigation';
 import getCollection from "../../lib/db";
 
-export default async function Page({ params }: { params: { alias: string } }) {
+interface PageProps {
+    params: {
+        alias: string;
+    };
+}
+
+export default async function Page({ params }: PageProps) {
     const links = await getCollection("links");
 
     const foundLink = await links.findOne({ alias: params.alias });
