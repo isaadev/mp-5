@@ -1,28 +1,21 @@
-import { NextResponse } from 'next/server';
-import getCollection from "../../lib/db";
+import { NextResponse } from 'next/server'
+import getCollection from '../../lib/db'
 
 export async function GET(
     request: Request,
-    { params }: { params: { alias: string } }
-): Promise<NextResponse> {  
-    try {
-        const { alias } = params;
-        const links = await getCollection("links");
-        const foundLink = await links.findOne({ alias });
+    { params }: { params: Promise<{ alias: string }> }
+): Promise<NextResponse> {
+    const { alias } = await params
 
-        if (!foundLink) {
-            return NextResponse.json(
-                { error: 'Link not found' },
-                { status: 404 }
-            );
-        }
+    const collection = await getCollection('links')
+    const link = await collection.findOne({ alias })
 
-        return NextResponse.redirect(foundLink.url);
-    } catch (error) {
-        console.error('Error:', error);
+    if (!link) {
         return NextResponse.json(
-            { error: 'Server error' },
-            { status: 500 }
-        );
+            { error: 'doesnt exist' },
+            { status: 404 }
+        )
     }
+
+    return NextResponse.redirect(link.url)  
 }
