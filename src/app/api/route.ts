@@ -13,11 +13,13 @@ export async function POST(request: Request) {
     try {
         newUrl = new URL(url);
     } catch (e) {
+        console.error(e);
         return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
     }
     try {
         await dns.lookup(newUrl.hostname);
     } catch (e) {
+        console.error(e);
         return NextResponse.json({ error: "Domain doesn't exist" }, { status: 400 });
     }
 
